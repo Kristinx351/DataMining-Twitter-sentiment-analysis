@@ -1,64 +1,63 @@
 # DataMining-Twitter-sentiment-analysis
-运行环境：
+
+Operating environment:
 ```
 > TensorFlow v2.7.0
 > Python 3.8
 > Cuda 11.2
-> GPU：RTX 3080（10.5GB) *1
-> CPU：Xeon Gold 6142 CPU *6
-> 内存：45GB
+> GPU: RTX 3080 (10.5GB) *1
+> CPU: Xeon Gold 6142 CPU *6
+> Memory: 45GB
 ```
-## Part 1 数据处理
 
-相应代码在 `Data process.ipynb` 中。
+## Part 1 Data Processing
 
-其中已有对于每个部分的code cell的markdown嵌入式说明功能，并且配有部分代码注释。
+The corresponding code is in `Data process.ipynb`.
 
-根据本研究数据预处理Case study的需要（相应模块已标注），运行相应功能的cell block（请严格按照指示顺序执行，否则会报错或者处理出错误的数据格式）。
+The notebook includes code cells with embedded Markdown explanations for each section, along with some code comments.
 
-* 功能说明：
-  本ipynb中实现了：
+To meet the requirements of the data preprocessing case study for this research (indicated in the respective modules), you need to run the corresponding cell blocks in the specified order. Failure to do so may result in errors or incorrect data formatting.
 
-1. 数据文档处理（删除不需要信息，进行正负标签划分）
+* Functionality:
+  This `ipynb` notebook implements the following:
 
-2. 颜表情处理 (*在去除颜表情之前，我们需要先去除网址与数字，为了避免把网址中"http:/", "https:/"中的":/"误判为我们的表情)
+1. Data document processing (removing unnecessary information and dividing into positive and negative labels).
 
-3. 去除粘连词（*在研究粘连词分割时，调用了  `wordninja.split`  后，在下文就不用再调用原先的NLTK分词模型 `word_tokenize` 了 ）
+2. Emoticon processing (*Before removing emoticons, we need to remove URLs and numbers to avoid mistakenly identifying ":/" in "http:/" and "https:/" as emoticons).
 
-4. 正则化去除标点
+3. Handling word contractions (*When studying word contractions, we use `wordninja.split`. After that, we don't need to use the original NLTK tokenizer `word_tokenize` anymore).
 
-5. 分词
+4. Normalizing and removing punctuation.
 
-6. 去停用词（*此处后期进行了词库调整，代码呈现最终版）
+5. Tokenization.
 
-7. 按照比例划分train:valid数据集（9：1）并统计数据特征（最长句，数据量，数据分布情况）
+6. Removing stop words (*The stop word corpus has been adjusted in this step. The presented code represents the final version).
 
-8. 创建迷你beta数据集（10K，用于初期模型调试与调参与快速实验）
+7. Splitting the dataset into training and validation sets in a 9:1 ratio and analyzing data features (longest sentence, data size, data distribution).
 
-   
+8. Creating a mini beta dataset (10K) for initial model debugging, parameter tuning, and quick experiments.
 
-## Part 2 词向量表示
+## Part 2 Word Embedding
 
-相应代码在 `LSTM_3baseline.ipynb` 中。 
+The corresponding code is in `LSTM_3baseline.ipynb`.
 
-其中已有对于每个部分的code cell的markdown嵌入式说明功能，并且配有部分代码注释。
+The notebook includes code cells with embedded Markdown explanations for each section, along with some code comments.
 
-根据本研究Case study需要（POS），运行相应功能的cell block（请严格按照指示顺序执行，并更改模型输入：无POS时，模型输入embedding变量为 `train_embed_weights` ，有POS时，模型输入embedding变量为 `train_imp_embed_weights` ）。
+To meet the requirements of the POS (part-of-speech) case study for this research, you need to run the corresponding cell blocks in the specified order. Also, make sure to change the model input accordingly: without POS, the model input embedding variable should be `train_embed_weights`, and with POS, the model input embedding variable should be `train_imp_embed_weights`.
 
-* 流程说明： 
+* Procedure:
 
-1.  载入 `gensim` 的word2vec模型   `word2vec_model` 
-2.  对照数据词表，对于在模型词典中的，我们直接引入预训练完的embedding，未搜索到的我们提供两种方式：1.赋0； 2. 随机赋值。（由函数 `get_word2vec_embeddings()` 实现）
-3.  词性标注优化词向量（可尝试两种库（SPACY OR NLTK)， Spacy可能会在某些平台出现版本不适配的问题，POS维度：17维；NLTK法若运行错误，请回到本文件第一个代码单元执行可解决错误，POS维度：20维）；我们给每一个词进行词性标注，并生成对应的ONE-HOT vector, 连接在原有embedding之后。
+1. Load the `gensim` word2vec model `word2vec_model`.
+2. Compare the data vocabulary with the model's dictionary. For words found in the model's dictionary, we directly import the pre-trained embeddings. For words not found, we provide two options: 1) assign 0; 2) assign a random value (implemented by the function `get_word2vec_embeddings()`).
+3. Optimize word embeddings with POS tags (you can try two libraries: SPACY or NLTK). If there are any issues related to version compatibility with Spacy on certain platforms, you can resolve them by executing the first code cell in this file. The POS dimensions are: 17 dimensions for Spacy and 20 dimensions for NLTK. We assign a POS tag to each word and generate the corresponding ONE-HOT vector, which is concatenated with the original embedding.
 
-## Part 3 模型实现
+## Part 3 Model Implementation
 
-相应代码在 `LSTM_3baseline.ipynb` 中。 
+The corresponding code is in `LSTM_3baseline.ipynb`.
 
-其中已有对于每个部分的code cell的markdown嵌入式说明功能，并且配有部分代码注释。
+The notebook includes code cells with embedded Markdown explanations for each section, along with some code comments.
 
-* 包含部分：
+* It contains the following sections:
 
-1. 模型包含LSTM, BiLSTM，BiLSTM-Attention三个模型的实现，以 `tensorflow` 搭建；
-2. 每个模型模块包含：模型搭建、模型训练以及模型验证/测试部分。
-
+1. Implementation of LSTM, BiLSTM, and BiLSTM-Attention models using `tensorflow`.
+2. Each model module includes the following parts: model construction, model training, and model validation/testing.
